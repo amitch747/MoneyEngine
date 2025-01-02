@@ -31,6 +31,4 @@ public:
 	int addOrder(double orderPrice, int orderQuantity, bool orderType);
 
 	void matchOrders();
-
-
 };
