@@ -1,11 +1,29 @@
-// main.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
-
 #include <iostream>
+#include "OrderBookManager.h"
+
 
 int main()
 {
-    std::cout << "Hello World!\n";
+    std::cout << "Starting Engine\n";
+
+    OrderBookManager orderBookManager;
+
+    std::cout << "\nPLTR\n" << std::endl;
+    orderBookManager.addOrder("PLTR", 100.0, 10, true);   // Buy 10@100
+    orderBookManager.addOrder("PLTR", 99.5, 5, false);    // Sell 5@99.5
+    orderBookManager.addOrder("PLTR", 98.0, 2, false);    // Sell 2@98
+    orderBookManager.addOrder("PLTR", 101.0, 10, true);   // Buy 10@101
+
+    std::cout << "\nTSLA\n" << std::endl;
+    orderBookManager.addOrder("TSLA", 200.0, 3, true);    // Buy 3@200
+    orderBookManager.addOrder("TSLA", 199.0, 5, false);   // Sell 5@199
+    orderBookManager.addOrder("TSLA", 202.0, 1, false);   // Sell 1@202
+    orderBookManager.addOrder("TSLA", 210.0, 4, false);   // Sell 4@210
+    orderBookManager.addOrder("TSLA", 205.0, 2, true);    // Buy 2@205
+
+    std::cin.get();
+    return 0;
+
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
