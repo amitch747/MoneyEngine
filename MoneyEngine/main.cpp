@@ -2,6 +2,9 @@
 #include <chrono>
 #include <ctime>
 #include <thread>
+#include <conio.h>
+
+
 #include "OrderBookManager.h"
 
 // Compiler does not like localtime
@@ -46,54 +49,61 @@ bool time_range(int start_hour, int start_minute, int end_hour, int end_minute) 
 
 int main()
 {
-    while (!time_range(7, 30, 20, 0)) {
-        std::cout << "Not in trading hours, waiting\n";
-        std::this_thread::sleep_for(std::chrono::minutes(1));
-
-    }
-
-
-
-
-    std::cout << "MARKET OPEN\n";
     OrderBookManager orderBookManager;
+    std::cout << "ENGINE STARTING\n\n\n" << std::endl;
 
+    while (true) // While .exe is open
+    {
+        while (!time_range(7, 30, 16, 0)) {
+            std::cout << "Not in trading hours, waiting\n";
+            std::time_t now = std::time(nullptr);
+            std::tm localTime = safeLocalTime(now);
 
-    //std::cout << "--7:30 AM--\n\n";
-    while (time_range(7, 30, 20, 0)) {
-        std::time_t now = std::time(nullptr);
-        std::tm localTime = safeLocalTime(now);
+            int hh = localTime.tm_hour;
+            int mm = localTime.tm_min;
+            std::cout << "Time is:[" << hh << ":" << mm << "]\n";
 
-        int hh = localTime.tm_hour;
-        int mm = localTime.tm_min;
+            std::this_thread::sleep_for(std::chrono::seconds(10));
+            if (_kbhit() && _getch() == 27) { // _kbhit checks if press. _getch gets code? (esc key)
+                goto stop;
+            }
+        }
+        while (time_range(7, 30, 16, 0)) {
+            std::time_t now = std::time(nullptr);
+            std::tm localTime = safeLocalTime(now);
 
-        std::cout << "Engine running. Time is:[" << hh << ":" << mm << "]\n";
+            int hh = localTime.tm_hour;
+            int mm = localTime.tm_min;
 
+            std::cout << "Engine running. Time is:[" << hh << ":" << mm << "]\n";
 
-        std::cout << "\nPLTR" << std::endl;
-        orderBookManager.addOrder("PLTR", 100.0, 10, true);
-        orderBookManager.addOrder("PLTR", 99.5, 5, false);
-        orderBookManager.addOrder("PLTR", 98.0, 2, false);
-        orderBookManager.addOrder("PLTR", 101.0, 10, true);
+            std::cout << "\nPLTR" << std::endl;
+            orderBookManager.addOrder("PLTR", 100.0, 10, true);
+            orderBookManager.addOrder("PLTR", 99.5, 5, false);
+            orderBookManager.addOrder("PLTR", 98.0, 2, false);
+            orderBookManager.addOrder("PLTR", 101.0, 10, true);
 
-        std::cout << "\nTSLA" << std::endl;
-        orderBookManager.addOrder("TSLA", 200.0, 3, true);
-        orderBookManager.addOrder("TSLA", 199.0, 5, false);
-        orderBookManager.addOrder("TSLA", 202.0, 1, false);
-        orderBookManager.addOrder("TSLA", 210.0, 4, false);
-        orderBookManager.addOrder("TSLA", 205.0, 2, true);
-        std::cin.get();
+            std::cout << "\nTSLA" << std::endl;
+            orderBookManager.addOrder("TSLA", 200.0, 3, true);
+            orderBookManager.addOrder("TSLA", 199.0, 5, false);
+            orderBookManager.addOrder("TSLA", 202.0, 1, false);
+            orderBookManager.addOrder("TSLA", 210.0, 4, false);
+            orderBookManager.addOrder("TSLA", 205.0, 2, true);
 
+            if (_kbhit() && _getch() == 27) { 
+                goto stop;
+            }
+
+            std::this_thread::sleep_for(std::chrono::seconds(1));
+        }
     }
 
 
+ 
 
+stop: // Finally get to use goto 
+    std::cout << "\n\n\nENGINE STOPPING\n\n\n" << std::endl;
+    std::this_thread::sleep_for(std::chrono::seconds(5));
 
-
-    std::cout << "\n\n--4:00 PM--\n\n";
-    std::cout << "MARKET CLOSED\n";
-
-    std::cin.get();
     return 0;
-
 }
