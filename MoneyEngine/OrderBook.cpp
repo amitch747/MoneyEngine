@@ -12,10 +12,22 @@ int OrderBook::addOrder( double orderPrice, int orderQuantity, bool orderType) {
 		orderQuantity,
 		orderType
 	};
-
+	std::string orderConfig;
 	// Create key at price or add to end of list if exists
-	if (orderType == true) { buyOrders[orderPrice].push_back(newOrder); }
-	else { sellOrders[orderPrice].push_back(newOrder); }
+	if (orderType == true) { 
+		buyOrders[orderPrice].push_back(newOrder); 
+		orderConfig = "Buy";
+	}
+	else { 
+		sellOrders[orderPrice].push_back(newOrder); 
+		orderConfig = "Sell";
+
+	}
+
+
+	std::cout << orderConfig << " order placed for "
+		<< orderQuantity << " shares of " << ticker << std::endl;
+
 
 	// After updating our maps, we try and match
 	matchOrders();

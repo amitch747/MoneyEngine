@@ -46,7 +46,7 @@ bool time_range(int start_hour, int start_minute, int end_hour, int end_minute) 
 
 int main()
 {
-    while (!time_range(7, 30, 16, 0)) {
+    while (!time_range(7, 30, 20, 0)) {
         std::cout << "Not in trading hours, waiting\n";
         std::this_thread::sleep_for(std::chrono::minutes(1));
 
@@ -60,7 +60,7 @@ int main()
 
 
     //std::cout << "--7:30 AM--\n\n";
-    while (time_range(7, 30, 16, 0)) {
+    while (time_range(7, 30, 20, 0)) {
         std::time_t now = std::time(nullptr);
         std::tm localTime = safeLocalTime(now);
 
