@@ -10,6 +10,8 @@ public:
 
 	int addOrder(const std::string& symbol, double orderPrice, int orderQuantity, bool orderType);
 
+	void matchAllOrders();
+
 private:
 	std::unordered_map<std::string, OrderBook> books;
 };

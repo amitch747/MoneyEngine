@@ -26,13 +26,12 @@ int OrderBook::addOrder( double orderPrice, int orderQuantity, bool orderType) {
 
 
 	std::cout << orderConfig << " order placed for "
-		<< orderQuantity << " shares of " << ticker << std::endl;
+		<< orderQuantity << " shares of " << ticker << "(" << 
+		newOrder.orderId << ")" << std::endl;
 
 
 	// After updating our maps, we try and match
 	matchOrders();
-
-	std::cout << "Order added:" << newOrder.orderId << std::endl;
 	return newOrder.orderId;
 }
 

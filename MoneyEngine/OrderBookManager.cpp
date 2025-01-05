@@ -13,3 +13,10 @@ int OrderBookManager::addOrder(const std::string& symbol, double orderPrice, int
 	// Returns orderId
 	return books.at(symbol).addOrder(orderPrice, orderQuantity, orderType);
 }
+
+void OrderBookManager::matchAllOrders() {
+	for (auto& [symbol, orderBook] : books) {
+		std::cout << "Matching orders for: " << symbol << "\n";
+		orderBook.matchOrders();
+	}
+} 

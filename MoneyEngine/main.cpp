@@ -4,6 +4,11 @@
 #include <thread>
 #include <conio.h>
 
+#include <cstdio>
+#include <sstream>
+#include <string>
+
+
 
 #include "OrderBookManager.h"
 
@@ -51,57 +56,76 @@ int main()
 {
     OrderBookManager orderBookManager;
     std::cout << "ENGINE STARTING\n\n\n" << std::endl;
+    std::cout << "Order Format:" << "\"submit [TICKER] [PRICE] [QUANTITY] [BUY/SELL]\"\n";
 
-    while (true) // While .exe is open
-    {
-        while (!time_range(7, 30, 16, 0)) {
-            std::cout << "Not in trading hours, waiting\n";
-            std::time_t now = std::time(nullptr);
-            std::tm localTime = safeLocalTime(now);
+    //printf("%c[%dmHELLO!\n", 0x1B, 32);
 
-            int hh = localTime.tm_hour;
-            int mm = localTime.tm_min;
-            std::cout << "Time is:[" << hh << ":" << mm << "]\n";
 
-            std::this_thread::sleep_for(std::chrono::seconds(10));
-            if (_kbhit() && _getch() == 27) { // _kbhit checks if press. _getch gets code? (esc key)
-                goto stop;
+ 
+    while (!time_range(7, 30, 16, 0)) {
+        std::cout << "Not in trading hours, waiting\n";
+        std::this_thread::sleep_for(std::chrono::seconds(10));
+    }
+
+    while (time_range(7, 30, 16, 0)) {
+
+
+        std::time_t now = std::time(nullptr);
+        std::tm localTime = safeLocalTime(now);
+        int hh = localTime.tm_hour;
+        int mm = localTime.tm_min;
+        std::cout << "Time:[" << hh << ":" << mm << "] \n";
+        std::string input;
+        std::getline(std::cin, input);
+        if (!input.empty()) { // Users can press enter to skip input
+            if (input == "exit") {
+                break; //Another option to exit program
             }
-        }
-        while (time_range(7, 30, 16, 0)) {
-            std::time_t now = std::time(nullptr);
-            std::tm localTime = safeLocalTime(now);
+            else if (input.substr(0, 6) == "submit") {
+                std::istringstream inputStream(input);
+                std::string command, ticker, orderType;
+                double price;
+                int quantity; 
+                inputStream >> command >> ticker >> price >> quantity >> orderType;
 
-            int hh = localTime.tm_hour;
-            int mm = localTime.tm_min;
+                bool isBuy = (orderType == "BUY");
+                orderBookManager.addOrder(ticker, price, quantity, isBuy);
 
-            std::cout << "Engine running. Time is:[" << hh << ":" << mm << "]\n";
-
-            std::cout << "\nPLTR" << std::endl;
-            orderBookManager.addOrder("PLTR", 100.0, 10, true);
-            orderBookManager.addOrder("PLTR", 99.5, 5, false);
-            orderBookManager.addOrder("PLTR", 98.0, 2, false);
-            orderBookManager.addOrder("PLTR", 101.0, 10, true);
-
-            std::cout << "\nTSLA" << std::endl;
-            orderBookManager.addOrder("TSLA", 200.0, 3, true);
-            orderBookManager.addOrder("TSLA", 199.0, 5, false);
-            orderBookManager.addOrder("TSLA", 202.0, 1, false);
-            orderBookManager.addOrder("TSLA", 210.0, 4, false);
-            orderBookManager.addOrder("TSLA", 205.0, 2, true);
-
-            if (_kbhit() && _getch() == 27) { 
-                goto stop;
+            }
+            else {
+                std::cout << "Invalid Command: " << input << "\n";
             }
 
-            std::this_thread::sleep_for(std::chrono::seconds(1));
         }
+
+
+        std::cout << "Processing Trades...\n";
+
+
+        // Need to get orderbook list, and loop thru each symbol
+        // Call match on each symbol
+
+
+
+
+       /* std::cout << "\nPLTR" << std::endl;
+        orderBookManager.addOrder("PLTR", 100.0, 10, true);
+        orderBookManager.addOrder("PLTR", 99.5, 5, false);
+
+        std::cout << "\nTSLA" << std::endl;
+        orderBookManager.addOrder("TSLA", 200.0, 3, true);
+        orderBookManager.addOrder("TSLA", 199.0, 5, false);
+        */
+
+
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+  
     }
 
 
  
 
-stop: // Finally get to use goto 
+//stop: // Finally get to use goto 
     std::cout << "\n\n\nENGINE STOPPING\n\n\n" << std::endl;
     std::this_thread::sleep_for(std::chrono::seconds(5));
 
