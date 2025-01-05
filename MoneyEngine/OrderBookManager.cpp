@@ -16,7 +16,6 @@ int OrderBookManager::addOrder(const std::string& symbol, double orderPrice, int
 
 void OrderBookManager::matchAllOrders() {
 	for (auto& [symbol, orderBook] : books) {
-		std::cout << "Matching orders for: " << symbol << "\n";
 		orderBook.matchOrders();
 	}
 } 

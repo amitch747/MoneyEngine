@@ -13,30 +13,38 @@ int OrderBook::addOrder( double orderPrice, int orderQuantity, bool orderType) {
 		orderType
 	};
 	std::string orderConfig;
+	std::string colorConfig;
+
 	// Create key at price or add to end of list if exists
-	if (orderType == true) { 
-		buyOrders[orderPrice].push_back(newOrder); 
+	if (orderType == true) {
+		buyOrders[orderPrice].push_back(newOrder);
 		orderConfig = "Buy";
+		colorConfig = "\033[32m";
 	}
 	else { 
 		sellOrders[orderPrice].push_back(newOrder); 
 		orderConfig = "Sell";
+		colorConfig = "\033[31m";
 
 	}
 
 
-	std::cout << orderConfig << " order placed for "
+	std::cout << colorConfig << orderConfig << " order placed for "
 		<< orderQuantity << " shares of " << ticker << "(" << 
-		newOrder.orderId << ")" << std::endl;
+		newOrder.orderId << ")\033[0m" << std::endl;
 
 
 	// After updating our maps, we try and match
-	matchOrders();
+	//matchOrders();
 	return newOrder.orderId;
 }
 
 void OrderBook::matchOrders() {
 	// Loop while there are possible matches
+	std::cout << "Matching orders for: " << ticker << "\n";
+	if (buyOrders.empty() || sellOrders.empty()) {
+		std::cout << "\033[33mNO POSSIBLE TRADES\033[0m" << std::endl;
+	}
 	while (!buyOrders.empty() && !sellOrders.empty()) {
 
 		// Get highest buy price (first key)
@@ -44,8 +52,9 @@ void OrderBook::matchOrders() {
 		// Get lowest sell price (first key)
 		double bestSellPrice = sellOrders.begin()->first;
 
-		// Can't match in this case
+		// No matches, exit
 		if (bestBuyPrice < bestSellPrice) {
+
 			break; 
 		}
 

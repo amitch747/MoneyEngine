@@ -55,33 +55,39 @@ bool time_range(int start_hour, int start_minute, int end_hour, int end_minute) 
 int main()
 {
     OrderBookManager orderBookManager;
-    std::cout << "ENGINE STARTING\n\n\n" << std::endl;
-    std::cout << "Order Format:" << "\"submit [TICKER] [PRICE] [QUANTITY] [BUY/SELL]\"\n";
+    std::cout << "\033[33mENGINE STARTING\033[0m\n\n\n" << std::endl;
+    //std::cout << "Order Format: " << "\"submit [TICKER] [PRICE] [QUANTITY] [BUY/SELL]\n";
 
     //printf("%c[%dmHELLO!\n", 0x1B, 32);
 
 
  
-    while (!time_range(7, 30, 16, 0)) {
+    while (!time_range(7, 30, 18, 0)) {
         std::cout << "Not in trading hours, waiting\n";
         std::this_thread::sleep_for(std::chrono::seconds(10));
     }
 
-    while (time_range(7, 30, 16, 0)) {
-
-
+    while (time_range(7, 30, 18, 0)) {
         std::time_t now = std::time(nullptr);
         std::tm localTime = safeLocalTime(now);
         int hh = localTime.tm_hour;
         int mm = localTime.tm_min;
-        std::cout << "Time:[" << hh << ":" << mm << "] \n";
+        std::cout << "Local Time: [" << hh << ":" << mm << "] \n";
+
+
+        std::string colorPrompt = "\033[34m"; // Blue for prompt
+        std::string reset = "\033[0m";       // Reset color
         std::string input;
+        // Display colored prompt
+        std::cout << colorPrompt << "Enter order (\"ORDER\" TICKER PRICE QUANTITY BUY/SELL\"): " << reset;
+        // Get user input
         std::getline(std::cin, input);
+
         if (!input.empty()) { // Users can press enter to skip input
             if (input == "exit") {
                 break; //Another option to exit program
             }
-            else if (input.substr(0, 6) == "submit") {
+            else if (input.substr(0, 5) == "ORDER") {
                 std::istringstream inputStream(input);
                 std::string command, ticker, orderType;
                 double price;
@@ -95,39 +101,15 @@ int main()
             else {
                 std::cout << "Invalid Command: " << input << "\n";
             }
-
         }
-
-
         std::cout << "Processing Trades...\n";
-
-
-        // Need to get orderbook list, and loop thru each symbol
-        // Call match on each symbol
-
-
-
-
-       /* std::cout << "\nPLTR" << std::endl;
-        orderBookManager.addOrder("PLTR", 100.0, 10, true);
-        orderBookManager.addOrder("PLTR", 99.5, 5, false);
-
-        std::cout << "\nTSLA" << std::endl;
-        orderBookManager.addOrder("TSLA", 200.0, 3, true);
-        orderBookManager.addOrder("TSLA", 199.0, 5, false);
-        */
-
+        orderBookManager.matchAllOrders();
 
         std::this_thread::sleep_for(std::chrono::seconds(1));
-  
     }
 
-
- 
-
-//stop: // Finally get to use goto 
-    std::cout << "\n\n\nENGINE STOPPING\n\n\n" << std::endl;
-    std::this_thread::sleep_for(std::chrono::seconds(5));
+    std::cout << "\n\n\n\033[33mENGINE STOPPING\033[0m\n\n\n" << std::endl;
+    std::this_thread::sleep_for(std::chrono::seconds(3));
 
     return 0;
 }
