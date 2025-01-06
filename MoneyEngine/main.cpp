@@ -62,12 +62,12 @@ int main()
 
 
  
-    while (!time_range(7, 30, 18, 0)) {
+    while (!time_range(7, 30, 23, 0)) {
         std::cout << "Not in trading hours, waiting\n";
         std::this_thread::sleep_for(std::chrono::seconds(10));
     }
 
-    while (time_range(7, 30, 18, 0)) {
+    while (time_range(7, 30, 23, 0)) {
         std::time_t now = std::time(nullptr);
         std::tm localTime = safeLocalTime(now);
         int hh = localTime.tm_hour;
