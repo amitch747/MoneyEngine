@@ -131,11 +131,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="OrderBook.cpp" />
     <ClCompile Include="OrderBookManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="InputManager.h" />
     <ClInclude Include="OrderBookManager.h" />
     <ClInclude Include="OrderBook.h" />
   </ItemGroup>

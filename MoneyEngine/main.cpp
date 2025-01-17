@@ -8,8 +8,9 @@
 #include <sstream>
 #include <string>
 
+#include <unordered_map>
 
-
+#include "InputManager.h"
 #include "OrderBookManager.h"
 
 // Compiler does not like localtime
@@ -55,13 +56,10 @@ bool time_range(int start_hour, int start_minute, int end_hour, int end_minute) 
 int main()
 {
     OrderBookManager orderBookManager;
+    InputManager inputManager;
+
     std::cout << "\033[33mENGINE STARTING\033[0m\n\n\n" << std::endl;
-    //std::cout << "Order Format: " << "\"submit [TICKER] [PRICE] [QUANTITY] [BUY/SELL]\n";
 
-    //printf("%c[%dmHELLO!\n", 0x1B, 32);
-
-
- 
     while (!time_range(7, 30, 23, 0)) {
         std::cout << "Not in trading hours, waiting\n";
         std::this_thread::sleep_for(std::chrono::seconds(10));
@@ -74,42 +72,44 @@ int main()
         int mm = localTime.tm_min;
         std::cout << "Local Time: [" << hh << ":" << mm << "] \n";
 
+        // Check order type, must be valid
+        // If NULL string 
+        // Prompt again with specifics, again check if valid
+
+        //std::unordered_map<std::string, std::function<void()>> commandMap = {
+        //    {"start", startCommand},
+        //    {"stop", stopCommand},
+        //    {"help", helpCommand}
+        //};
 
         std::string colorPrompt = "\033[34m"; // Blue for prompt
         std::string reset = "\033[0m";       // Reset color
-        std::string input;
         // Display colored prompt
-        std::cout << colorPrompt << "Enter order (\"ORDER\" TICKER PRICE QUANTITY BUY/SELL\"): " << reset;
-        // Get user input
-        std::getline(std::cin, input);
+        std::cout << colorPrompt << "Enter Command (ORDER/INFO/HELP): " << reset;
+        // Get user command
+        std::string command;
+        std::getline(std::cin, command);
+        command = inputManager.CommandInput(command);
 
-        if (!input.empty()) { // Users can press enter to skip input
-            if (input == "exit") {
-                break; //Another option to exit program
-            }
-            else if (input.substr(0, 5) == "ORDER") {
-                std::istringstream inputStream(input);
-                std::string command, ticker, orderType;
-                double price;
-                int quantity; 
-                inputStream >> command >> ticker >> price >> quantity >> orderType;
+        //Switch statement here depdning on command.
+        switch (command) {
 
-                bool isBuy = (orderType == "BUY");
-                orderBookManager.addOrder(ticker, price, quantity, isBuy);
-
-            }
-            else {
-                std::cout << "Invalid Command: " << input << "\n";
-            }
         }
+        std::cout << colorPrompt << "Enter order (\"ORDER\" TICKER PRICE QUANTITY BUY/SELL\"): " << reset;
+        std::string parameters;
+        std::getline(std::cin, parameters);
+        inputManager.ParametersInput(parameters);
+
+
+
         std::cout << "Processing Trades...\n";
         orderBookManager.matchAllOrders();
 
         std::this_thread::sleep_for(std::chrono::seconds(1));
     }
 
+
     std::cout << "\n\n\n\033[33mENGINE STOPPING\033[0m\n\n\n" << std::endl;
     std::this_thread::sleep_for(std::chrono::seconds(3));
-
     return 0;
 }
