@@ -25,18 +25,23 @@ std::string InputManager::CommandInput(const std::string& command)
     return std::string("INVALID");
 }
 
-std::string InputManager::ParametersInput(const std::string& parameters)
+std::string InputManager::OrderInput()
 {
-    //std::istringstream inputStream(parameters);
-    //std::string ticker, orderType;
-    //double price;
-    //int quantity;
-    //inputStream >> ticker >> price >> quantity >> orderType;
+    std::string colorPrompt = "\033[34m"; // Blue for prompt
+    std::string reset = "\033[0m";       // Reset color
+    std::cout << "Handling Order" << std::endl;
+    std::cout << colorPrompt << "Enter order (\"[BUY/SELL] [SYMBOL] [PRICE] [QUANTITY]\"): " << reset;
 
-    //bool isBuy = (orderType == "BUY");
-    //orderBookManager.addOrder(ticker, price, quantity, isBuy);
+    std::string parameters;
+    std::getline(std::cin, parameters);
+    std::istringstream inputStream(parameters);
+    std::string orderType, symbol;
+    double price;
+    int quantity;
+    inputStream >> orderType >> symbol >> price >> quantity;
 
-
+    bool isBuy = (orderType == "BUY");
+    //orderBookManager.addOrder(symbol, price, quantity, isBuy);
 
 	return std::string();
 }

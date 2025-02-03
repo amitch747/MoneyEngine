@@ -13,6 +13,8 @@
 #include "InputManager.h"
 #include "OrderBookManager.h"
 
+#include <functional>
+
 // Compiler does not like localtime
 std::tm safeLocalTime(std::time_t time) {
     std::tm result;
@@ -76,11 +78,7 @@ int main()
         // If NULL string 
         // Prompt again with specifics, again check if valid
 
-        //std::unordered_map<std::string, std::function<void()>> commandMap = {
-        //    {"start", startCommand},
-        //    {"stop", stopCommand},
-        //    {"help", helpCommand}
-        //};
+
 
         std::string colorPrompt = "\033[34m"; // Blue for prompt
         std::string reset = "\033[0m";       // Reset color
@@ -91,14 +89,23 @@ int main()
         std::getline(std::cin, command);
         command = inputManager.CommandInput(command);
 
-        //Switch statement here depdning on command.
-        switch (command) {
 
+        // Command function map
+        std::unordered_map<std::string, std::function<void()>> commandHandlers = {
+              {"ORDER", [&inputManager]() { inputManager.OrderInput(); }}
+             // {"INFO",  [&inputManager]() { inputManager.InfoInput(); }},
+             // {"HELP",  [&inputManager]() { inputManager.HelpInput(); }}
+        };
+
+        //Switch statement here depdning on command.
+        if (commandHandlers.find(command) != commandHandlers.end()) {
+            commandHandlers[command]();
         }
-        std::cout << colorPrompt << "Enter order (\"ORDER\" TICKER PRICE QUANTITY BUY/SELL\"): " << reset;
-        std::string parameters;
-        std::getline(std::cin, parameters);
-        inputManager.ParametersInput(parameters);
+        else {
+            std::cout << "Unknown command!" << std::endl;
+        }
+
+
 
 
 
