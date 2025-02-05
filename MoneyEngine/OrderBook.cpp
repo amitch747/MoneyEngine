@@ -5,7 +5,6 @@ OrderBook::OrderBook(const std::string& symbol) : nextOrderId(1), ticker(symbol)
 
 int OrderBook::addOrder( double orderPrice, int orderQuantity, bool orderType) {
 
-	// Create new order
 	Order newOrder {
 		nextOrderId++,
 		orderPrice,
@@ -15,7 +14,6 @@ int OrderBook::addOrder( double orderPrice, int orderQuantity, bool orderType) {
 	std::string orderConfig;
 	std::string colorConfig;
 
-	// Create key at price or add to end of list if exists
 	if (orderType == true) {
 		buyOrders[orderPrice].push_back(newOrder);
 		orderConfig = "Buy";

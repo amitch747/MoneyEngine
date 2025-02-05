@@ -12,6 +12,8 @@ public:
 
 	void matchAllOrders();
 
+	void displayActiveOrders();
+
 private:
 	std::unordered_map<std::string, OrderBook> books;
 };

@@ -3,29 +3,38 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <unordered_map>
+
+#include "OrderBook.h"
+#include "OrderBookManager.h"
+#include <functional>
 
 
-std::string InputManager::CommandInput(const std::string& command)
+InputManager::InputManager(OrderBookManager& obm) : orderBookManager(obm) {};
+
+void InputManager::CommandInput(const std::string& command)
 {
-    if (!command.empty()) { // Users can press enter to skip input
-        if (command == "EXIT") {
-            std::cout << "Command is: " << command << "\n";
+    // Command function map
+    static const std::unordered_map<std::string, std::function<void()>> commandHandlers = {
+        {"ORDER", [this]() { this->OrderInput(); }},
+        {"LIST", [this]() {orderBookManager.displayActiveOrders(); }}
 
-            return std::string("EXIT"); //Another option to exit program
+    };
+
+    if (!command.empty()) { // Users can press enter to skip input
+        std::cout << "Command is: " << command << "\n";
+        {
+            auto it = commandHandlers.find(command);
+            if (it != commandHandlers.end()) {
+                it->second();  // Call the function without returning anything
+                return;        // Exit the function after execution
+            }
         }
-        else if (command == "ORDER") {
-            std::cout << "Command is: " << command << "\n";
-            return std::string("ORDER"); //Another option to exit program
-        }
-        else {
-            std::cout << "Command is: " << command << "\n";
-            return std::string("INVALID");
-        }
+        std::cout << "Unknown command!" << std::endl;
     }
-    return std::string("INVALID");
 }
 
-std::string InputManager::OrderInput()
+void InputManager::OrderInput()
 {
     std::string colorPrompt = "\033[34m"; // Blue for prompt
     std::string reset = "\033[0m";       // Reset color
@@ -41,7 +50,7 @@ std::string InputManager::OrderInput()
     inputStream >> orderType >> symbol >> price >> quantity;
 
     bool isBuy = (orderType == "BUY");
-    //orderBookManager.addOrder(symbol, price, quantity, isBuy);
+    orderBookManager.addOrder(symbol, price, quantity, isBuy);
 
-	return std::string();
+    return;
 }

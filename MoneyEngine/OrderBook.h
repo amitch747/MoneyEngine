@@ -26,6 +26,18 @@ private:
 	std::string ticker;
 
 public:
+	const std::map<double, std::list<Order>, std::greater<double>>& getBuyOrders() const 
+	{
+		return buyOrders;
+	}
+
+	const std::map<double, std::list<Order>>& getSellOrders() const 
+	{
+		return sellOrders;
+	}
+
+
+
 	OrderBook(const std::string& symbol);
 
 	int addOrder(double orderPrice, int orderQuantity, bool orderType);

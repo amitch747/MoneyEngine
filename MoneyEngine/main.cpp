@@ -58,7 +58,7 @@ bool time_range(int start_hour, int start_minute, int end_hour, int end_minute) 
 int main()
 {
     OrderBookManager orderBookManager;
-    InputManager inputManager;
+    InputManager inputManager(orderBookManager);
 
     std::cout << "\033[33mENGINE STARTING\033[0m\n\n\n" << std::endl;
 
@@ -87,25 +87,8 @@ int main()
         // Get user command
         std::string command;
         std::getline(std::cin, command);
-        command = inputManager.CommandInput(command);
-
-
-        // Command function map
-        std::unordered_map<std::string, std::function<void()>> commandHandlers = {
-              {"ORDER", [&inputManager]() { inputManager.OrderInput(); }}
-             // {"INFO",  [&inputManager]() { inputManager.InfoInput(); }},
-             // {"HELP",  [&inputManager]() { inputManager.HelpInput(); }}
-        };
-
-        //Switch statement here depdning on command.
-        if (commandHandlers.find(command) != commandHandlers.end()) {
-            commandHandlers[command]();
-        }
-        else {
-            std::cout << "Unknown command!" << std::endl;
-        }
-
-
+        inputManager.CommandInput(command); // nice and clean.
+        // idk if this is a bad idea. its basically gunna chain forever in here.
 
 
 
